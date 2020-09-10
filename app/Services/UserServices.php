@@ -27,19 +27,6 @@ class UserServices
     }
 
     /**
-     * Update user details.
-     *
-     * @param array $data
-     */
-    public function createUser($data)
-    {
-        $user = new User($data);
-        // $user->uuid = $this->generateUniqueData('User', 'uuid');
-        $user->password = Hash::make($data['password']);
-        $user->save();
-    }
-
-    /**
      * Get all users by role.
      *
      * @return object

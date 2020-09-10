@@ -10,12 +10,12 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    private $auth;
+    private $authService;
     private $userService;
 
     public function __construct(AuthService $auth, UserServices $user)
     {
-        $this->auth = $auth;
+        $this->authService = $auth;
         $this->userService = $user;
     }
 
@@ -26,10 +26,9 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        return 323;
         $this->validateLogin($request);
 
-        if (!$login = $this->auth->login($request->only(['email', 'password']))) {
+        if (!$login = $this->authService->login($request->only(['email', 'password']))) {
             return $this->errorResponse(422, ['error' => 'Invalid email or password']);
         }
 
@@ -45,7 +44,7 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->auth->refresh();
+        return $this->authService->refresh();
     }
 
     /**
@@ -55,7 +54,7 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        $this->auth->logout();
+        $this->authService->logout();
 
         return $this->successResponse(201, ['message' => 'Logged out successfully']);
     }
@@ -67,7 +66,7 @@ class AuthController extends Controller
      */
     public function details()
     {
-        $user = $this->auth->details();
+        $user = $this->authService->details();
 
         return $this->successResponse(200, ['data' => $user]);
     }
@@ -90,7 +89,7 @@ class AuthController extends Controller
      */
     public function update(Request $request)
     {
-        $user = $this->auth->user();
+        $user = $this->authService->user();
         $this->user->update($request->all(), $user);
 
         return $this->successResponse(200, ['message' => 'Updated successfully']);
@@ -107,10 +106,12 @@ class AuthController extends Controller
         $data['role_id'] = 2;
 
         try {
-            $this->userService->createUser($data);
+            return $this->authService->register($data);
 
             return response()->json(['success' => true, 'message' => 'Registration successful'], 201);
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
+            throw $e;
+
             return response()->json(['success' => false, 'message' => 'An error occured'], 500);
         }
     }
