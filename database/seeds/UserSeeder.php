@@ -18,6 +18,7 @@ class UserSeeder extends Seeder
             'email' => 'admin@test.com',
             'password' => bcrypt('password'),
             'role_id' => 1,
+            'uuid' => '82-28393',
         ]);
 
         Role::create(['id' => 1, 'name' => 'Administrator']);

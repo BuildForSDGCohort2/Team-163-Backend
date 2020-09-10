@@ -135,12 +135,12 @@ class AuthService
         return [
             'token' => $token,
             'token_type' => 'Bearer',
-            'expires_in' => env('JWT_TTL'),
+            // 'expires_in' => env('JWT_TTL'),
             'email' => Auth::user()->email,
             'uuid' => Auth::user()->uuid,
             'dashboard_type' => Auth::user()->dashboard_type,
             'verified' => is_null(Auth::user()->email_verified_at) ? false : true,
-            'role' => Auth::user()->role,
+            'role' => Auth::user()->role->name,
         ];
     }
 }
