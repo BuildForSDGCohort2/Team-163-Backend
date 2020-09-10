@@ -11,13 +11,12 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
     private $auth;
-    private $user;
-    private $image;
+    private $userService;
 
     public function __construct(AuthService $auth, UserServices $user)
     {
         $this->auth = $auth;
-        $this->user = $user;
+        $this->userService = $user;
     }
 
     /**
@@ -27,6 +26,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        return 323;
         $this->validateLogin($request);
 
         if (!$login = $this->auth->login($request->only(['email', 'password']))) {
@@ -94,5 +94,24 @@ class AuthController extends Controller
         $this->user->update($request->all(), $user);
 
         return $this->successResponse(200, ['message' => 'Updated successfully']);
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|string|email|unique:users',
+            'name' => ['required', 'string', 'max:255'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+        $data = $request->all();
+        $data['role_id'] = 2;
+
+        try {
+            $this->userService->createUser($data);
+
+            return response()->json(['success' => true, 'message' => 'Registration successful'], 201);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false, 'message' => 'An error occured'], 500);
+        }
     }
 }

@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Traits\ModelTraits;
 use App\User;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 class UserServices
@@ -35,10 +34,8 @@ class UserServices
     public function createUser($data)
     {
         $user = new User($data);
-        $user->uuid = $this->generateUniqueData('User', 'uuid');
+        // $user->uuid = $this->generateUniqueData('User', 'uuid');
         $user->password = Hash::make($data['password']);
-        $user->email_verified_at = Carbon::now();
-        $user->activation_status = 1;
         $user->save();
     }
 
