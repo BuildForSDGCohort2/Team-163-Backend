@@ -97,9 +97,14 @@ class AuthService
      */
     public function details()
     {
-        $user = Auth::user();
-
-        // return $user->makeHidden(['created_at', 'updated_at']);
+        return [
+            'name' => Auth::user()->name,
+            'email' => Auth::user()->email,
+            'uuid' => Auth::user()->uuid,
+            'dashboard_type' => Auth::user()->dashboard_type,
+            'verified' => is_null(Auth::user()->email_verified_at) ? false : true,
+            'role' => Auth::user()->role->name,
+        ];
     }
 
     /**
@@ -135,6 +140,7 @@ class AuthService
         return [
             'token' => $token,
             'token_type' => 'Bearer',
+            'name' => Auth::user()->name,
             // 'expires_in' => env('JWT_TTL'),
             'email' => Auth::user()->email,
             'uuid' => Auth::user()->uuid,
